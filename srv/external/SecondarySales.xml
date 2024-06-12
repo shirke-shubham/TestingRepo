@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0"
+    xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+        <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="ideal_retailer_registration"
+            xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="RetailerDetails" EntityType="ideal_retailer_registration.RetailerDetails">
+                    <NavigationPropertyBinding Path="TO_ADDRESS" Target="RetailerAddressDetail"/>
+                    <NavigationPropertyBinding Path="TO_RETAILER_TYPE" Target="RetailerTypeMaster"/>
+                </EntitySet>
+                <EntitySet Name="RetailerAttachments" EntityType="ideal_retailer_registration.RetailerAttachments"/>
+                <EntitySet Name="RetailerPDC" EntityType="ideal_retailer_registration.RetailerPDC">
+                    <NavigationPropertyBinding Path="TO_CURRENCY" Target="CountryMaster"/>
+                </EntitySet>
+                <EntitySet Name="RetailerAddressDetail" EntityType="ideal_retailer_registration.RetailerAddressDetail">
+                    <NavigationPropertyBinding Path="TO_ADDRESS_TYPE" Target="AddressTypeMaster"/>
+                    <NavigationPropertyBinding Path="TO_COUNTRY" Target="CountryMaster"/>
+                    <NavigationPropertyBinding Path="TO_REGION" Target="RegionMaster"/>
+                    <NavigationPropertyBinding Path="TO_CITY" Target="CityMaster"/>
+                </EntitySet>
+                <EntitySet Name="CountryMaster" EntityType="ideal_retailer_registration.CountryMaster"/>
+                <EntitySet Name="CityMaster" EntityType="ideal_retailer_registration.CityMaster"/>
+                <EntitySet Name="RegionMaster" EntityType="ideal_retailer_registration.RegionMaster"/>
+                <EntitySet Name="RetailerTypeMaster" EntityType="ideal_retailer_registration.RetailerTypeMaster"/>
+                <EntitySet Name="AddressTypeMaster" EntityType="ideal_retailer_registration.AddressTypeMaster"/>
+                <EntitySet Name="TemplateAttachments" EntityType="ideal_retailer_registration.TemplateAttachments"/>
+                <ActionImport Name="registerRetailer" Action="ideal_retailer_registration.registerRetailer"/>
+                <ActionImport Name="pdcCreation" Action="ideal_retailer_registration.pdcCreation"/>
+                <ActionImport Name="templateCreation" Action="ideal_retailer_registration.templateCreation"/>
+            </EntityContainer>
+            <EntityType Name="RetailerDetails">
+                <Key>
+                    <PropertyRef Name="DISTRIBUTOR_ID"/>
+                    <PropertyRef Name="RETAILER_ID"/>
+                </Key>
+                <Property Name="DISTRIBUTOR_ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="RETAILER_ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="RETAILER_NAME" Type="Edm.String" MaxLength="50"/>
+                <Property Name="NAME_OF_BANK" Type="Edm.String" MaxLength="50"/>
+                <Property Name="BANK_ACC_NO" Type="Edm.String" MaxLength="20"/>
+                <Property Name="IFSC_CODE" Type="Edm.String" MaxLength="20"/>
+                <Property Name="UPI_ID" Type="Edm.String" MaxLength="30"/>
+                <Property Name="REGISTERED_TAX_ID" Type="Edm.String" MaxLength="15"/>
+                <Property Name="PAN_NO" Type="Edm.String" MaxLength="10"/>
+                <Property Name="CREATION_DATE" Type="Edm.Date"/>
+                <Property Name="RETAILER_TYPE" Type="Edm.Int32"/>
+                <Property Name="BLOCKED" Type="Edm.String" MaxLength="1"/>
+                <Property Name="CHANGE_DATE" Type="Edm.Date"/>
+                <Property Name="RETAILER_CLASS" Type="Edm.String" MaxLength="1"/>
+                <Property Name="PAY_TERM" Type="Edm.Int32"/>
+                <Property Name="FIELD_1" Type="Edm.String" MaxLength="50"/>
+                <Property Name="FIELD_2" Type="Edm.String" MaxLength="50"/>
+                <Property Name="FIELD_3" Type="Edm.String" MaxLength="50"/>
+                <Property Name="FIELD_4" Type="Edm.String" MaxLength="50"/>
+                <Property Name="FIELD_5" Type="Edm.String" MaxLength="50"/>
+                <NavigationProperty Name="TO_ADDRESS" Type="Collection(ideal_retailer_registration.RetailerAddressDetail)"/>
+                <NavigationProperty Name="TO_RETAILER_TYPE" Type="ideal_retailer_registration.RetailerTypeMaster">
+                    <ReferentialConstraint Property="RETAILER_TYPE" ReferencedProperty="RETAILER_TYPE_ID"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="RetailerAttachments">
+                <Key>
+                    <PropertyRef Name="DISTRIBUTOR_ID"/>
+                    <PropertyRef Name="RETAILER_ID"/>
+                    <PropertyRef Name="FILE_ID"/>
+                </Key>
+                <Property Name="DISTRIBUTOR_ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="RETAILER_ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="FILE_ID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="FILE_CONTENT" Type="Edm.Stream"/>
+                <Property Name="FILE_MIMETYPE" Type="Edm.String" MaxLength="100"/>
+                <Property Name="FILE_TYPE" Type="Edm.String" MaxLength="100"/>
+                <Property Name="FILE_NAME" Type="Edm.String" MaxLength="100"/>
+            </EntityType>
+            <EntityType Name="RetailerPDC">
+                <Key>
+                    <PropertyRef Name="DISTRIBUTOR_ID"/>
+                    <PropertyRef Name="RETAILER_ID"/>
+                    <PropertyRef Name="PDC_ID"/>
+                </Key>
+                <Property Name="DISTRIBUTOR_ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="RETAILER_ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="PDC_ID" Type="Edm.Int64" Nullable="false"/>
+                <Property Name="NAME_OF_BANK" Type="Edm.String" MaxLength="20"/>
+                <Property Name="CHEQUE_NUMBER" Type="Edm.Int32"/>
+                <Property Name="CREATION_DATE" Type="Edm.Date"/>
+                <Property Name="AMOUNT" Type="Edm.Double"/>
+                <Property Name="CURR_CODE" Type="Edm.String" MaxLength="5"/>
+                <NavigationProperty Name="TO_CURRENCY" Type="ideal_retailer_registration.CountryMaster"/>
+            </EntityType>
+            <EntityType Name="RetailerAddressDetail">
+                <Key>
+                    <PropertyRef Name="DISTRIBUTOR_ID"/>
+                    <PropertyRef Name="RETAILER_ID"/>
+                    <PropertyRef Name="SR_NO"/>
+                </Key>
+                <Property Name="DISTRIBUTOR_ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="RETAILER_ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="SR_NO" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="ADDRESS_TYPE" Type="Edm.String" MaxLength="15"/>
+                <Property Name="MOBILE_NO" Type="Edm.String" MaxLength="15"/>
+                <Property Name="TELEPHONE_NO" Type="Edm.String" MaxLength="15"/>
+                <Property Name="EMAIL_ID" Type="Edm.String" MaxLength="50"/>
+                <Property Name="FAX_NO" Type="Edm.String" MaxLength="15"/>
+                <Property Name="CONTACT_PERSON" Type="Edm.String" MaxLength="50"/>
+                <Property Name="STREET_NO" Type="Edm.String" MaxLength="100"/>
+                <Property Name="ADDRESS_LINE_1" Type="Edm.String" MaxLength="200"/>
+                <Property Name="ADDRESS_LINE_2" Type="Edm.String" MaxLength="200"/>
+                <Property Name="ADDRESS_LINE_3" Type="Edm.String" MaxLength="200"/>
+                <Property Name="COUNTRY" Type="Edm.String" MaxLength="5"/>
+                <Property Name="REGION" Type="Edm.String" MaxLength="5"/>
+                <Property Name="CITY" Type="Edm.String" MaxLength="5"/>
+                <Property Name="POSTAL_CODE" Type="Edm.String" MaxLength="10"/>
+                <NavigationProperty Name="TO_ADDRESS_TYPE" Type="ideal_retailer_registration.AddressTypeMaster">
+                    <ReferentialConstraint Property="ADDRESS_TYPE" ReferencedProperty="ADDRESS_TYPE"/>
+                </NavigationProperty>
+                <NavigationProperty Name="TO_COUNTRY" Type="ideal_retailer_registration.CountryMaster">
+                    <ReferentialConstraint Property="COUNTRY" ReferencedProperty="COUNTRY_CODE"/>
+                </NavigationProperty>
+                <NavigationProperty Name="TO_REGION" Type="ideal_retailer_registration.RegionMaster">
+                    <ReferentialConstraint Property="REGION" ReferencedProperty="REGION_CODE"/>
+                </NavigationProperty>
+                <NavigationProperty Name="TO_CITY" Type="ideal_retailer_registration.CityMaster">
+                    <ReferentialConstraint Property="CITY" ReferencedProperty="CITY_CODE"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="CountryMaster">
+                <Key>
+                    <PropertyRef Name="COUNTRY_CODE"/>
+                </Key>
+                <Property Name="COUNTRY_CODE" Type="Edm.String" MaxLength="5" Nullable="false"/>
+                <Property Name="COUNTRY_DESC" Type="Edm.String" MaxLength="50"/>
+                <Property Name="CURR_CODE" Type="Edm.String" MaxLength="5"/>
+            </EntityType>
+            <EntityType Name="CityMaster">
+                <Key>
+                    <PropertyRef Name="COUNTRY_CODE"/>
+                    <PropertyRef Name="REGION_CODE"/>
+                    <PropertyRef Name="CITY_CODE"/>
+                </Key>
+                <Property Name="COUNTRY_CODE" Type="Edm.String" MaxLength="5" Nullable="false"/>
+                <Property Name="REGION_CODE" Type="Edm.String" MaxLength="5" Nullable="false"/>
+                <Property Name="CITY_CODE" Type="Edm.String" MaxLength="5" Nullable="false"/>
+                <Property Name="CITY_DESC" Type="Edm.String" MaxLength="50"/>
+            </EntityType>
+            <EntityType Name="RegionMaster">
+                <Key>
+                    <PropertyRef Name="COUNTRY_CODE"/>
+                    <PropertyRef Name="REGION_CODE"/>
+                </Key>
+                <Property Name="COUNTRY_CODE" Type="Edm.String" MaxLength="5" Nullable="false"/>
+                <Property Name="REGION_CODE" Type="Edm.String" MaxLength="5" Nullable="false"/>
+                <Property Name="REGION_DESC" Type="Edm.String" MaxLength="50"/>
+            </EntityType>
+            <EntityType Name="RetailerTypeMaster">
+                <Key>
+                    <PropertyRef Name="RETAILER_TYPE_ID"/>
+                </Key>
+                <Property Name="RETAILER_TYPE_ID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="RETAILER_TYPE" Type="Edm.String" MaxLength="100"/>
+            </EntityType>
+            <EntityType Name="AddressTypeMaster">
+                <Key>
+                    <PropertyRef Name="ADDRESS_TYPE"/>
+                </Key>
+                <Property Name="ADDRESS_TYPE" Type="Edm.String" MaxLength="15" Nullable="false"/>
+                <Property Name="ADDRESS_DESC" Type="Edm.String" MaxLength="30"/>
+            </EntityType>
+            <EntityType Name="TemplateAttachments">
+                <Key>
+                    <PropertyRef Name="TEMPLATE_ID"/>
+                </Key>
+                <Property Name="TEMPLATE_ID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="TEMPLATE_NAME" Type="Edm.String" MaxLength="100"/>
+                <Property Name="TEMPLATE_CONTENT" Type="Edm.Stream"/>
+                <Property Name="TEMPLATE_MIMETYPE" Type="Edm.String" MaxLength="100"/>
+                <Property Name="TEMPLATE_TYPE" Type="Edm.String" MaxLength="100"/>
+            </EntityType>
+            <Action Name="registerRetailer" IsBound="false">
+                <Parameter Name="Action" Type="Edm.String"/>
+                <Parameter Name="retailerDetails" Type="Collection(ideal_retailer_registration.RetailerDetails)" Nullable="false"/>
+                <Parameter Name="retailerAddress" Type="Collection(ideal_retailer_registration.RetailerAddressDetail)" Nullable="false"/>
+                <Parameter Name="retailerAttachments" Type="Collection(ideal_retailer_registration.RetailerAttachments)" Nullable="false"/>
+                <ReturnType Type="Edm.String"/>
+            </Action>
+            <Action Name="pdcCreation" IsBound="false">
+                <Parameter Name="retailerPDC" Type="Collection(ideal_retailer_registration.RetailerPDC)" Nullable="false"/>
+                <ReturnType Type="Edm.String"/>
+            </Action>
+            <Action Name="templateCreation" IsBound="false">
+                <Parameter Name="templateDetails" Type="Collection(ideal_retailer_registration.TemplateAttachments)" Nullable="false"/>
+                <ReturnType Type="Edm.String"/>
+            </Action>
+            <Annotations Target="ideal_retailer_registration.RetailerAttachments/FILE_CONTENT">
+                <Annotation Term="Core.ContentDisposition">
+                    <Record Type="Core.ContentDispositionType">
+                        <PropertyValue Property="Filename" Path="FILE_NAME"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Core.MediaType" Path="FILE_MIMETYPE"/>
+            </Annotations>
+            <Annotations Target="ideal_retailer_registration.RetailerAttachments/FILE_MIMETYPE">
+                <Annotation Term="Core.IsMediaType" Bool="true"/>
+            </Annotations>
+            <Annotations Target="ideal_retailer_registration.TemplateAttachments/TEMPLATE_CONTENT">
+                <Annotation Term="Core.ContentDisposition">
+                    <Record Type="Core.ContentDispositionType">
+                        <PropertyValue Property="Filename" Path="TEMPLATE_NAME"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Core.MediaType" Path="TEMPLATE_MIMETYPE"/>
+            </Annotations>
+            <Annotations Target="ideal_retailer_registration.TemplateAttachments/TEMPLATE_MIMETYPE">
+                <Annotation Term="Core.IsMediaType" Bool="true"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
